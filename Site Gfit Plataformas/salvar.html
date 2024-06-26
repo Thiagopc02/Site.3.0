@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gifts de TV e Streaming</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-FH32RVOQxkvvW5tFwZg3NWU7Q3rbXFL7dEMFVPReJ3jP14jskaPd+UKglLC/WzP3BHB1WLO6Fg3OLWZOl5g7Cw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* Estilo do corpo */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #000;
+            color: #fff;
+            line-height: 1.6;
+            padding-top: 140px; /* Adiciona espaço para o cabeçalho fixo */
+            margin-bottom: 60px; /* Espaço para o ícone do WhatsApp no rodapé */
+            position: relative; /* Permite posicionar elementos filhos relativamente a ele */
+        }
+        /* Estilo do cabeçalho */
+        header {
+            background-color: rgb(0, 0, 0);
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            color: red;
+            animation: fadeInOut 2s infinite;
+        }
+        header p {
+            font-family: 'Pacifico', cursive;
+            font-size: 3rem; /* Aumenta o tamanho da fonte */
+            color: gold;
+            margin: 10px 0 0 0;
+            animation: float 3s infinite;
+            text-shadow: 2px 2px 4px #000; /* Adiciona sombra ao texto */
+        }
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+        /* Estilo do contêiner principal */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        /* Estilo dos produtos */
+        .produto {
+            width: 30%;
+            background-color: black;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .produto:hover {
+            transform: translateY(-5px);
+        }
+        .produto img {
+            width: 100%;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+        .produto .info {
+            padding: 20px;
+        }
+        .produto h2 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+        .produto p {
+            font-size: 1rem;
+            color: rgb(196, 196, 196);
+            margin-bottom: 15px;
+        }
+        .produto .preco {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ff0000;
+        }
+        /* Estilo do carrinho */
+        #carrinho {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            width: 300px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+            z-index: 1100; /* Ajustado para estar na frente do cabeçalho */
+            display: none;
+        }
+        #carrinho.active {
+            display: block;
+        }
+        #carrinho h2 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        #carrinho .item-carrinho {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            color: #333;
+        }
+        #carrinho .item-carrinho:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        #carrinho .item-carrinho p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+        #carrinho .valor-total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #04d400;
+            margin-top: 10px;
+        }
+        /* Estilo do botão de fechar compra */
+        #fechar-compra {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #ff6f61;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            z-index: 1000;
+        }
+        #fechar-compra:hover {
+            background-color: #f93d2e;
+        }
+        /* Estilo do botão de compra */
+        .botao-comprar {
+            background-color: #ff4040;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+        .botao-comprar:hover {
+            background-color: #e60000;
+        }
+        .botao-comprar i {
+            margin-right: 5px;
+        }
+        /* Estilo do botão de remover */
+        .botao-remover {
+            background-color: #ff4040;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        .botao-remover:hover {
+            background-color: #e60000;
+        }
+        /* Estilo do espaço para imagem */
+        #whatsapp-placeholder {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 50px; /* Ajuste conforme necessário */
+            height: 50px; /* Ajuste conforme necessário */
+            background-color: transparent; /* Deixe transparente para imagem personalizada */
+            /* Adicione outros estilos conforme necessário */
+        }
+        #whatsapp-placeholder img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Gifs de TV e Streaming</h1>
+        <p>7 Dias Grátis</p>
+    </header>
+
+    <div class="container" id="planos">
+        <!-- Produtos serão inseridos aqui pelo JavaScript -->
+    </div>
+
+    <div id="carrinho">
+        <h2>Carrinho:</h2>
+        <div id="itens-carrinho">
+            <!-- Itens do carrinho serão adicionados aqui -->
+        </div>
+        <p id="total-carrinho">Total: R$ 0.00</p>
+    </div>
+
+    <button id="fechar-compra" onclick="redirecionarParaPagamento()">Fechar a Compra</button>
+
+<script>
+    function redirecionarParaPagamento() {
+        window.location.href = 'pagamento.html';
+    }
+</script>
+
+
+    <!-- Espaço reservado para imagem (antes do JavaScript) -->
+    <div id="whatsapp-placeholder">
+        <!-- Substitua a imagem abaixo pelo caminho correto da sua imagem do WhatsApp -->
+        <a href="https://api.whatsapp.com/send?phone=+5562996916206" target="_blank">
+            <img src="whatsapp logo.webp" alt="WhatsApp">
+        </a>
+    </div>
+
+    <script>
+        const items = [
+            {id: 0, nome: 'Plano MENSAL', descricao: 'Assinatura Mensal para assistir aos melhores conteúdos.', preco: 21.90, img: '1.png', quantidade: 0},
+            {id: 1, nome: 'Plano TRIMESTRAL', descricao: 'Assinatura Trimestral para assistir aos melhores conteúdos.', preco: 54.90, img: '2.png', quantidade: 0},
+            {id: 2, nome: 'Plano ANUAL', descricao: 'Assinatura Anual para assistir aos melhores conteúdos.', preco: 139.90, img: '3.png', quantidade: 0},
+    
+            {id: 3, nome: 'Plano MENSAL', descricao: 'Assinatura mensal para acesso ilimitado a filmes e séries.', preco: 14.90, img: '4.png', quantidade: 0},
+            {id: 4, nome: 'Plano TRIMESTRAL', descricao: 'Assinatura trimestral para acesso ilimitado a filmes e séries,com os melhores lançamentos.', preco: 39.90, img: '5.png', quantidade: 0},
+            {id: 5, nome: 'Plano ANUAL', descricao: 'Assinatura anual para os maiores fãs de streaming.', preco: 110.90, img: '6.png', quantidade: 0},
+    
+            {id: 6, nome: 'Plano MENSAL', descricao: 'Assinatura mensal para acesso ilimitado TV a filmes e séries.', preco: 32.90, img: '7.png', quantidade: 0},
+            {id: 7, nome: 'Plano TRIMESTRAL', descricao: 'Assinatura mensal para acesso ilimitado TV a filmes e séries.', preco: 89.90, img: '8.png', quantidade: 0},
+            {id: 8, nome: 'Plano ANUAL', descricao: 'Assinatura mensal para acesso ilimitado TV a filmes e séries.', preco: 219.90, img: '9.png', quantidade: 0},
+    
+            {id: 9, nome: 'Plano MENSAL', descricao: 'Assinatura mensal para acesso ilimitado a filmes e séries.', preco: 20.90, img: '10.png', quantidade: 0},
+            {id: 10, nome: 'Plano TRIMESTRAL', descricao: 'Assinatura mensal para acesso ilimitado a filmes e séries.', preco: 54.90, img: '11.png', quantidade: 0},
+            {id: 11, nome: 'Plano ANUAL', descricao: 'Assinatura mensal para acesso ilimitado a filmes e séries.', preco: 140.90, img: '12.png', quantidade: 0},
+        ];
+    
+        const inicializarLoja = () => {
+            const containerProdutos = document.getElementById('planos');
+            items.forEach((val) => {
+                containerProdutos.innerHTML += `
+                    <div class="produto single-produto">
+                        <img src="${val.img}" alt="${val.nome}" />
+                        <div class="info">
+                            <h2>${val.nome}</h2>
+                            <p>${val.descricao}</p>
+                            <p class="preco">R$ ${val.preco.toFixed(2)}</p>
+                            <a class="botao-comprar" key="${val.id}" href="#"><i class="fas fa-shopping-cart"></i> Comprar</a>
+                        </div>
+                    </div>
+                `;
+            });
+            adicionarEventosDeCompra();
+        };
+    
+        const atualizarCarrinho = () => {
+            const containerCarrinho = document.getElementById('itens-carrinho');
+            const totalCarrinho = document.getElementById('total-carrinho');
+            containerCarrinho.innerHTML = '';
+            let total = 0;
+    
+            items.forEach((val, index) => {
+                if (val.quantidade > 0) {
+                    containerCarrinho.innerHTML += `
+                        <div class="item-carrinho">
+                            <p>${val.nome} | Quantidade: ${val.quantidade} | Total: R$ ${(val.preco * val.quantidade).toFixed(2)}</p>
+                            <a href="#" class="botao-remover" data-index="${index}"><i class="fas fa-trash-alt"></i> Excluir</a>
+                        </div>
+                    `;
+                    total += val.preco * val.quantidade;
+                }
+            });
+    
+            totalCarrinho.innerHTML = `Total: R$ ${total.toFixed(2)}`;
+            document.getElementById('carrinho').classList.add('active');
+            localStorage.setItem('carrinho', JSON.stringify(items));  // Armazena no localStorage
+            adicionarEventosDeRemocao();
+        };
+    
+        const adicionarEventosDeCompra = () => {
+            const links = document.getElementsByClassName('botao-comprar');
+    
+            for (let i = 0; i < links.length; i++) {
+                links[i].addEventListener('click', function() {
+                    const key = this.getAttribute('key');
+                    items[key].quantidade++;
+                    atualizarCarrinho();
+                    return false;
+                });
+            }
+        };
+    
+        const adicionarEventosDeRemocao = () => {
+            const links = document.getElementsByClassName('botao-remover');
+    
+            for (let i = 0; i < links.length; i++) {
+                links[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const index = this.getAttribute('data-index');
+                    items[index].quantidade = 0;
+                    atualizarCarrinho();
+                });
+            }
+        };
+    
+        const fecharCompra = () => {
+            alert("Compra fechada com sucesso!");
+            items.forEach(item => item.quantidade = 0);
+            atualizarCarrinho();
+            localStorage.removeItem('carrinho');  // Remove do localStorage
+        };
+    
+        inicializarLoja();
+    </script>
+    
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento</title>
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* Estilo do corpo */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        /* Estilo do contêiner */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        /* Estilo do cabeçalho */
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        header h1 {
+            font-size: 2rem;
+            color: #ff6f61;
+        }
+        /* Estilo dos itens do carrinho */
+        .item-carrinho {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .item-carrinho p {
+            margin: 0;
+            font-size: 1rem;
+        }
+        /* Estilo do valor total */
+        .valor-total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #04d400;
+            margin-top: 20px;
+            text-align: right;
+        }
+        /* Estilo do formulário */
+        form {
+            margin-top: 20px;
+        }
+        form input,
+        form button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        form button {
+            background-color: #ff6f61;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        form button:hover {
+            background-color: #f93d2e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Resumo da Compra</h1>
+        </header>
+        <div id="itens-carrinho">
+            <!-- Itens do carrinho serão adicionados aqui -->
+        </div>
+        <p id="total-carrinho">Total: R$ 0.00</p>
+
+        <form id="formulario">
+            <input type="text" id="nome" placeholder="Nome Completo" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="tel" id="celular" placeholder="Número de Celular" required>
+            <button type="button" onclick="enviarPedido()">Enviar Pedido</button>
+        </form>
+    </div>
+
+    <script>
+        function carregarCarrinho() {
+            const itensCarrinho = document.getElementById('itens-carrinho');
+            const totalCarrinho = document.getElementById('total-carrinho');
+            let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+
+            itensCarrinho.innerHTML = '';
+            let total = 0;
+
+            carrinho.forEach(produto => {
+                if (produto.quantidade > 0) { // Verifica se o produto foi adicionado ao carrinho
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'item-carrinho';
+                    itemDiv.innerHTML = `
+                        <p>${produto.nome} | Quantidade: ${produto.quantidade} | Total: R$ ${(produto.preco * produto.quantidade).toFixed(2)}</p>
+                    `;
+                    itensCarrinho.appendChild(itemDiv);
+                    total += produto.preco * produto.quantidade;
+                }
+            });
+
+            totalCarrinho.innerText = `Total: R$ ${total.toFixed(2)}`;
+        }
+
+        function enviarPedido() {
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const celular = document.getElementById('celular').value;
+            const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+            const total = document.getElementById('total-carrinho').innerText;
+
+            let mensagem = `Olá! Esse é o meu pedido:\n\n`;
+            carrinho.forEach(produto => {
+                if (produto.quantidade > 0) {
+                    mensagem += `${produto.nome} | Quantidade: ${produto.quantidade} | Total: R$ ${(produto.preco * produto.quantidade).toFixed(2)}\n`;
+                }
+            });
+            mensagem += `\n${total}\n\nNome: ${nome}\nEmail: ${email}\nCelular: ${celular}`;
+
+            const linkWhatsapp = `https://api.whatsapp.com/send?phone=+5562996916206&text=${encodeURIComponent(mensagem)}`;
+
+            window.open(linkWhatsapp, '_blank');
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarCarrinho);
+    </script>
+</body>
+</html>
